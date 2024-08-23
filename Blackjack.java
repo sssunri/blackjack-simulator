@@ -5,22 +5,30 @@ public class Blackjack {
 
     public static Scanner sc = new Scanner(System.in);
 
+    public static boolean exitGame = false;
+
     public static void main(String[] args) {
         System.out.println("Welcome to Java Casino!");
 
-        int handValue = playGame();
-        if (handValue == -1) {
-            System.out.println("\nDealer wins!");
-            return;
-        }
+        do {
+            // if the player has busted, in which case the dealer wins by default
+            int handValue = playGame();
+            if (handValue == -1) {
+                System.out.println("\nDealer wins!");
+            } else {
+                // if the dealer has busted, in which case the player wins by default
+                int dealerHand = dealerPlays();
+                if (dealerHand == -1) {
+                    System.out.println("\nPlayer wins!");
+                } else {
+                    determineWinner(handValue, dealerHand);
+                }
+            }
 
-        int dealerHand = dealerPlays();
-        if (dealerHand == -1) {
-            System.out.println("\nPlayer wins!");
-            return;
-        }
+            exitGame = !playAnotherRound();
+        } while (!exitGame);
 
-        determineWinner(handValue, dealerHand);
+        System.out.println("Thank you for playing! Goodbye.");
     }
 
     // manages the main game loop, allowing the player to draw cards and track hand value
@@ -46,6 +54,7 @@ public class Blackjack {
         return handValue;
     }
 
+    // handles the dealer's turn to draw cards and track their hand value
     public static int dealerPlays() {
         System.out.println("\nDealer's turn.\n");
 
@@ -67,6 +76,7 @@ public class Blackjack {
         return dealerHand;
     }
 
+    // determines the winner between the player and the dealer based on their hand values
     public static void determineWinner(int handValue, int dealerHand) {
         if (handValue > dealerHand) {
             System.out.println("\nPlayer wins!");
@@ -77,13 +87,47 @@ public class Blackjack {
         }
     }
 
+    // prompts the player to play another round and validates the input
+    public static boolean playAnotherRound() {
+        char response = ' ';
+
+        do {
+            System.out.print("\nWould you like to play another round? (y/n): ");
+            String input = sc.nextLine().trim().toLowerCase();
+
+            if (input.isEmpty()) {
+                System.out.println("Input cannot be empty. Please enter 'y' or 'n'.");
+                continue;
+            }
+
+            response = input.charAt(0);
+
+            if (response != 'y' && response != 'n') {
+                System.out.println("Invalid input. Please enter 'y' or 'n'.");
+            }
+        } while (response != 'y' && response != 'n');
+
+        return response == 'y';
+    }
+
     // prompts the player to draw a card and validates input
     public static char askToDrawCard() {
-        char response;
+        char response = ' ';
 
         do {
             System.out.print("\nDo you want to draw a card? (y/n): ");
-            response = sc.nextLine().toLowerCase().charAt(0);
+            String input = sc.nextLine().trim().toLowerCase();
+
+            if (input.isEmpty()) {
+                System.out.print("Input cannot be empty. Please enter 'y' or 'n'.\n");
+                continue;
+            }
+
+            response = input.charAt(0);
+
+            if (response != 'y' && response != 'n') {
+                System.out.println("Invalid input. Please enter 'y' or 'n'.");
+            }
         } while (response != 'y' && response != 'n');
 
         return response;
