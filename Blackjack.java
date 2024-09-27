@@ -74,10 +74,24 @@ public class Blackjack {
 
         int dealerHand = 0;
         int card;
+        int aces = 0;
 
         while (dealerHand < 17) {
             card = drawCard();
-            dealerHand += card;
+
+            // track aces in the dealer's hand
+            if (card == 1) {
+                aces++;
+                dealerHand += 11;
+            } else {
+                dealerHand += card;
+            }
+
+            // adjust the hand value for aces
+            if (dealerHand > 21 && aces > 0) {
+                dealerHand -= 10;
+                aces--;
+            }
 
             if (dealerHand > 21) {
                 System.out.println("Dealer's total is " + dealerHand + ". He'd busted!");
