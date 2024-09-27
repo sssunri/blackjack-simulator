@@ -34,12 +34,26 @@ public class Blackjack {
     // manages the main game loop, allowing the player to draw cards and track hand value
     public static int playGame() {
         int handValue = 0;
+        int aces = 0;
 
         char response = askToDrawCard();
 
         while (response == 'y') {
             int card = drawCard();
-            handValue += card;
+
+            // track aces in the player's hand
+            if (card == 1) {
+                aces++;
+                handValue += 11;
+            } else {
+                handValue += card;
+            }
+
+            // adjust the hand value based on whether an ace is drawn
+            if (handValue > 21 && aces > 0) {
+                handValue -= 10;
+                aces--;
+            }
 
             if (handValue > 21) {
                 System.out.println("Your total is " + handValue + ". You've busted!");
@@ -134,6 +148,7 @@ public class Blackjack {
     }
 
     public static int drawCard() {
-        return (int) (Math.random() * 11 + 1);
+        int card = (int) (Math.random() * 13 + 1);
+        return (card == 1) ? 1 : (card > 10) ? 10 : card;
     }
 }
